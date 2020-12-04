@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  django: &django
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: rocketdata_django
+    container_name: rocketdata_django
+    depends_on:
+      - db
+    env_file:
+      - ./.envs/django
+      - ./.envs/postgres
+    volumes:
+      - ./rocketdata/:/home/rocketdata
+    ports:
+      - 8000:8000
+    command: python manage.py runserver 0.0.0.0:8000
+
+  db:
+    image: postgres
+    env_file: ./.envs/postgres
+    container_name: rocketdata_db
+    ports:
+      - 55551:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
