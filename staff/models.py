@@ -29,6 +29,12 @@ class EmployeeMptt(MPTTModel):
     parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True,
                             blank=True, related_name='employee')
 
+    class Meta:
+        """Metadata of EmployeeMptt."""
+
+        verbose_name = "Employee"
+        verbose_name_plural = "Employees"
+
     def __str__(self) -> str:
         """Return the string representation of the object.
 

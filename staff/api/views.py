@@ -1,5 +1,5 @@
 """This module contents view methods for EmployeeMptt."""
-
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from rest_framework.decorators import api_view, permission_classes
@@ -16,6 +16,8 @@ class EmployeeListView(ReadOnlyModelViewSet):
 
     serializer_class = EmployeeSerializerList
     queryset = EmployeeMptt.objects.all()
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['level']
 
 
 class EmployeeListLevel0View(EmployeeListView):

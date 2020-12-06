@@ -11,7 +11,7 @@ class EmployeeSerializerList(serializers.ModelSerializer):
         """Metadata of EmployeeMptt."""
 
         model = EmployeeMptt
-        fields = ['name', 'surname', 'middle_name', 'role', 'employment_date',
+        fields = ['name', 'surname', 'patronymic', 'role', 'employment_date',
                   'salary', 'parent', 'total_paid', 'url']
         extra_kwargs = {
             'url': {

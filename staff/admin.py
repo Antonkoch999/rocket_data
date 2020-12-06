@@ -52,7 +52,7 @@ class AdminEmployeeMptt(AdminChangeLinksMixin, MPTTModelAdmin):
     actions = ['delete_information']
     change_links = ['parent']
     fieldsets = (
-        (None, {'fields': ('name', 'surname', 'middle_name', 'role',
+        (None, {'fields': ('name', 'surname', 'patronymic', 'role',
                            'employment_date', 'salary', 'total_paid_list',
                            'parent', 'user')
                 }

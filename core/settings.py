@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django_celery_beat',
     'django_seed',
     'rest_framework',
+    'django_filters',
     'mptt',
     'staff.apps.StaffConfig',
 ]
@@ -96,6 +97,9 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.TokenAuthentication",
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+    ]
 }
 
 # Password validation
