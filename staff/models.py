@@ -8,13 +8,20 @@ from rest_framework.reverse import reverse
 class EmployeeMptt(MPTTModel):
 
     EMPLOYEE_TYPES = tuple(EMPLOYEE_TYPES.items())
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    role = models.CharField(max_length=25, choices=EMPLOYEE_TYPES)
-    name = models.CharField(max_length=100)
-    surname = models.CharField(max_length=100)
-    middle_name = models.CharField(max_length=100)
-    employment_date = models.DateField()
-    salary = models.IntegerField(verbose_name='Salary in $')
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True,
+                            blank=True)
+    role = models.CharField(max_length=25, choices=EMPLOYEE_TYPES, null=True,
+                            blank=True)
+    name = models.CharField(max_length=35, null=True,
+                            blank=True)
+    surname = models.CharField(max_length=35, null=True,
+                            blank=True)
+    middle_name = models.CharField(max_length=35, null=True,
+                            blank=True)
+    employment_date = models.DateField(null=True,
+                            blank=True)
+    salary = models.PositiveSmallIntegerField(verbose_name='Salary in $', null=True,
+                            blank=True)
 
     parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True,
                             blank=True, related_name='employee')

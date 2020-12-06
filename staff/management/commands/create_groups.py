@@ -32,31 +32,6 @@ class Command(BaseCommand):
             users[user].set_password('12345')
             users[user].save()
 
-        # chief_technical_officer = User.objects.get_or_create(
-        #     username='Chief_technical_officer')[first_element_tuple]
-        # chief_technical_officer.set_password('12345')
-        # chief_technical_officer.save()
-        #
-        # team_lead = User.objects.get_or_create(
-        #     username='TeamLead')[first_element_tuple]
-        # team_lead.set_password('12345')
-        # team_lead.save()
-        #
-        # senior = User.objects.get_or_create(
-        #     username='Senior')[first_element_tuple]
-        # senior.set_password('12345')
-        # senior.save()
-        #
-        # middle = User.objects.get_or_create(
-        #     username='Middle')[first_element_tuple]
-        # middle.set_password('12345')
-        # middle.save()
-        #
-        # junior = User.objects.get_or_create(
-        #     username='Junior')[first_element_tuple]
-        # junior.set_password('12345')
-        # junior.save()
-
         chief_technical_officer_employee = EmployeeMptt.objects.get_or_create(
                 user=users['Chief_technical_officer'],
                 role=EMPLOYEE_TYPES['Chief_technical_officer'],

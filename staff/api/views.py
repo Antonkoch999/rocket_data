@@ -1,7 +1,10 @@
+from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
-from staff.api.serializers import EmployeeSerializerList
+from staff.api.serializers import EmployeeSerializerList, UserSerializer
 from staff.models import EmployeeMptt
 from rest_framework.decorators import permission_classes
+from rest_framework.decorators import api_view
+
 from .permissions import ChiefPermissions
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
@@ -35,3 +38,11 @@ class EmployeeListLevel3View(EmployeeListView):
 class EmployeeListLevel4View(EmployeeListView):
     def get_queryset(self):
         return EmployeeListView.queryset.filter(level=4)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def profile(request):
+    user = request.user
+    serialized_user = UserSerializer(user).data
+    return Response({'user': serialized_user})

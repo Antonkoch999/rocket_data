@@ -10,7 +10,7 @@ from django.utils.html import format_html
 from .models import EmployeeMptt, InformationPaidSalary
 from .forms import ProductModelInlineForm, UserChangeForm
 from django_admin_relation_links import AdminChangeLinksMixin
-
+from .tasks import delete_task
 
 class ProductModelInline(admin.StackedInline):
     model = EmployeeMptt
@@ -42,7 +42,7 @@ class AdminEmployeeMptt(AdminChangeLinksMixin, MPTTModelAdmin):
     change_links = ['parent']
     fieldsets = (
         (None, {'fields': ('name', 'surname', 'middle_name', 'role',
-                           'employment_date', 'salary', 'total_paid_list')
+                           'employment_date', 'salary', 'total_paid_list', 'parent', 'user')
                 }
          ),
     )
@@ -61,9 +61,15 @@ class AdminEmployeeMptt(AdminChangeLinksMixin, MPTTModelAdmin):
         return format_html(', '.join(info_list))
 
     def delete_information(self, request, queryset):
-        for employee in queryset:
-            info = InformationPaidSalary.objects.filter(employee=employee.id)
-            info.delete()
+        if queryset.count() > 20:
+            lst = []
+            for employee in queryset:
+                lst.append(employee.id)
+            delete_task.delay(lst)
+        else:
+            for employee in queryset:
+                info = InformationPaidSalary.objects.filter(employee=employee.id)
+                info.delete()
 
 
 class GroupAdminWithCount(GroupAdmin):

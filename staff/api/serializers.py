@@ -13,3 +13,10 @@ class EmployeeSerializerList(serializers.ModelSerializer):
                 'view_name': 'api:employeemptt-detail'
             },
         }
+
+
+class UserSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = EmployeeMptt
+        fields = '__all__'

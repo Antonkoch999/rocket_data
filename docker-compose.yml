@@ -27,5 +27,31 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  redis:
+    image: redis:5.0
+    container_name: redis
+
+  celeryworker:
+    <<: *django
+    image: rocketdata_celeryworker
+    container_name: celeryworker
+    depends_on:
+      - redis
+      - db
+
+    ports: []
+    command: celery -A core worker -l INFO
+
+  celerybeat:
+    <<: *django
+    image: rocketdata_celerybeat
+    container_name: celerybeat
+    depends_on:
+      - redis
+      - db
+
+    ports: []
+    command: celery -A core beat -l INFO
+
 volumes:
   postgres_data:
