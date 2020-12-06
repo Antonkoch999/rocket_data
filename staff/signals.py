@@ -11,7 +11,7 @@ from staff.constants import EMPLOYEE_TYPES
 
 @receiver(post_save, sender=User)
 def my_user_handler(instance, created,  **kwargs):
-    """Post-create user signal that adds the user is_staff equals True"""
+    """Post-create user signal that adds the user is_staff equals True."""
     if created:
         instance.is_staff = True
         instance.save()
@@ -20,7 +20,6 @@ def my_user_handler(instance, created,  **kwargs):
 @receiver(pre_save, sender=EmployeeMptt)
 def my_handler(instance,  **kwargs):
     """Pre-create EmployeeMptt signal that adds the user to everyone group."""
-
     try:
         if instance.role == EMPLOYEE_TYPES['Chief_technical_officer']:
             group = Group.objects.get(

@@ -14,13 +14,15 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         """Logic custom command.
+
         Create users and groups and appoints permissions for groups."""
         first_element_tuple = 0
         groups = {'Chief_technical_officer': None, 'TeamLead': None,
                   'Senior': None, 'Middle': None, 'Junior': None}
 
         for group in groups.keys():
-            groups[group] = Group.objects.get_or_create(name=group)[first_element_tuple]
+            groups[group] = Group.objects.get_or_create(name=group)[
+                first_element_tuple]
             groups[group].save()
 
         users = {'Chief_technical_officer': None, 'TeamLead': None,
@@ -115,4 +117,3 @@ class Command(BaseCommand):
         senior_employee.save()
         middle_employee.save()
         junior_employee.save()
-

@@ -9,4 +9,5 @@ class StaffConfig(AppConfig):
     name = 'staff'
 
     def ready(self):
+        """At startup application imports signals."""
         import staff.signals

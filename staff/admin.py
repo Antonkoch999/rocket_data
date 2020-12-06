@@ -62,7 +62,7 @@ class AdminEmployeeMptt(AdminChangeLinksMixin, MPTTModelAdmin):
 
     @staticmethod
     def total_paid_list(obj):
-        """Shows information about the number of salary payments."""
+        """Show information about the number of salary payments."""
         info_salary = InformationPaidSalary.objects.filter(employee=obj)
         if info_salary.count() == 0:
             return '0 $'
@@ -74,7 +74,7 @@ class AdminEmployeeMptt(AdminChangeLinksMixin, MPTTModelAdmin):
         return format_html(', '.join(info_list))
 
     def delete_information(self, request, queryset):
-        """Action method.
+        """Delete information.
 
         Removes all information about the number of salary payments, if
         the number of users is more than 20, then the task is sent to celery.
@@ -86,7 +86,8 @@ class AdminEmployeeMptt(AdminChangeLinksMixin, MPTTModelAdmin):
             delete_task.delay(lst)
         else:
             for employee in queryset:
-                info = InformationPaidSalary.objects.filter(employee=employee.id)
+                info = InformationPaidSalary.objects.filter(
+                    employee=employee.id)
                 info.delete()
 
 

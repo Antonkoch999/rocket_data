@@ -44,7 +44,7 @@ class EmployeeMptt(MPTTModel):
         return f'{self.surname} {self.name} {self.patronymic}'
 
     def total_paid(self) -> str:
-        """Calculates the amount of paid salary.
+        """Calculate the amount of paid salary.
 
         :return: example: '1234 $'
         """
@@ -54,7 +54,7 @@ class EmployeeMptt(MPTTModel):
         return f'{total.aggregate(total=models.Sum("salary"))["total"]} $'
 
     def get_absolute_url(self) -> str:
-        """"Get url for user's detail view.
+        """Get url for user's detail view.
 
         :return: URL for user detail.
         """

@@ -1,3 +1,5 @@
+"""This module displays URL patterns."""
+
 from django.conf import settings
 from rest_framework.urls import path
 from rest_framework.routers import DefaultRouter, SimpleRouter

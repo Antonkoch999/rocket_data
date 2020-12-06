@@ -22,7 +22,7 @@ def payroll():
 
 @shared_task
 def delete_task(lst):
-    """Removes all information about the number of salary payments.
+    """Remove all information about the number of salary payments.
 
     The list(lst) contains id EmployeeMptt.
     """
