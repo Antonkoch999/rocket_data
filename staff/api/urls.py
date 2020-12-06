@@ -1,7 +1,11 @@
 from django.conf import settings
 from rest_framework.urls import path
-from staff.api.views import (EmployeeListView, EmployeeListLevel0View, EmployeeListLevel1View, EmployeeListLevel2View, EmployeeListLevel3View, EmployeeListLevel4View, profile)
 from rest_framework.routers import DefaultRouter, SimpleRouter
+
+from staff.api.views import (
+    EmployeeListView, EmployeeListLevel0View, EmployeeListLevel1View,
+    EmployeeListLevel2View, EmployeeListLevel3View, EmployeeListLevel4View,
+    profile)
 
 app_name = "api"
 

@@ -1,29 +1,37 @@
+"""This class is representation of User, Employee in the admin interface."""
+
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.admin import GroupAdmin
 from django.contrib.auth.models import Group, User
+from django.utils.html import format_html
 
 from mptt.admin import MPTTModelAdmin
 from rest_framework.reverse import reverse
-from django.utils.html import format_html
-
-from .models import EmployeeMptt, InformationPaidSalary
-from .forms import ProductModelInlineForm, UserChangeForm
 from django_admin_relation_links import AdminChangeLinksMixin
-from .tasks import delete_task
+
+from staff.models import EmployeeMptt, InformationPaidSalary
+from staff.forms import ProductModelInlineForm, UserChangeForm
+from staff.tasks import delete_task
+
 
 class ProductModelInline(admin.StackedInline):
+    """Allows inline model in User model."""
+
     model = EmployeeMptt
     form = ProductModelInlineForm
     extra = 1
 
 
 class CustomUserAdmin(UserAdmin):
+    """Class is representation of a model User in the admin interface."""
+
     inlines = (ProductModelInline, )
     form = UserChangeForm
     list_display = ('username', 'is_active', 'is_staff')
     fieldsets = (
-        (None, {'fields': ('email', 'username', 'first_name', 'last_name', 'is_staff')
+        (None, {'fields': ('email', 'username', 'first_name', 'last_name',
+                           'is_staff')
                 }
          ),
     )
@@ -36,13 +44,17 @@ class CustomUserAdmin(UserAdmin):
 
 
 class AdminEmployeeMptt(AdminChangeLinksMixin, MPTTModelAdmin):
-    list_display = ('full_name', 'role', 'parent_link', 'salary', 'total_paid',)
+    """Class is representation of model EmployeeMptt in the admin interface."""
+
+    list_display = ('full_name', 'role', 'parent_link', 'salary',
+                    'total_paid',)
     list_filter = ('role', 'level')
     actions = ['delete_information']
     change_links = ['parent']
     fieldsets = (
         (None, {'fields': ('name', 'surname', 'middle_name', 'role',
-                           'employment_date', 'salary', 'total_paid_list', 'parent', 'user')
+                           'employment_date', 'salary', 'total_paid_list',
+                           'parent', 'user')
                 }
          ),
     )
@@ -50,6 +62,7 @@ class AdminEmployeeMptt(AdminChangeLinksMixin, MPTTModelAdmin):
 
     @staticmethod
     def total_paid_list(obj):
+        """Shows information about the number of salary payments."""
         info_salary = InformationPaidSalary.objects.filter(employee=obj)
         if info_salary.count() == 0:
             return '0 $'
@@ -57,10 +70,15 @@ class AdminEmployeeMptt(AdminChangeLinksMixin, MPTTModelAdmin):
         for info in info_salary:
             change_url = reverse('admin:staff_informationpaidsalary_change',
                                  args=(info.id, ))
-            info_list.append('<a href="%s">%s</a>' % (change_url, info))
+            info_list.append(f'<a href="{change_url}">{info}</a>')
         return format_html(', '.join(info_list))
 
     def delete_information(self, request, queryset):
+        """Action method.
+
+        Removes all information about the number of salary payments, if
+        the number of users is more than 20, then the task is sent to celery.
+        """
         if queryset.count() > 20:
             lst = []
             for employee in queryset:
