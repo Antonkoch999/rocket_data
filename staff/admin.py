@@ -50,12 +50,11 @@ class AdminEmployeeMptt(AdminChangeLinksMixin, MPTTModelAdmin):
     list_display = ('full_name', 'role', 'parent_link', 'salary',
                     'total_paid',)
     list_filter = ('role', 'level')
-    actions = ['delete_information']
+    actions = ['delete_information_about_salary_payments']
     change_links = ['parent']
     fieldsets = (
         (None, {'fields': ('name', 'surname', 'patronymic', 'role',
-                           'employment_date', 'salary', 'total_paid_list',
-                           'parent', 'user')
+                           'employment_date', 'salary', 'total_paid_list', )
                 }
          ),
     )
@@ -84,7 +83,7 @@ class AdminEmployeeMptt(AdminChangeLinksMixin, MPTTModelAdmin):
             info_list.append(f'<a href="{change_url}">{info}</a>')
         return format_html(', '.join(info_list))
 
-    def delete_information(self, request, queryset):
+    def delete_information_about_salary_payments(self, request, queryset):
         """Delete information.
 
         Removes all information about the number of salary payments, if
