@@ -21,22 +21,9 @@ def my_user_handler(instance, created,  **kwargs):
 def my_handler(instance,  **kwargs):
     """Pre-create EmployeeMptt signal that adds the user to everyone group."""
     try:
-        if instance.role == EMPLOYEE_TYPES['Chief_technical_officer']:
-            group = Group.objects.get(
-                name=EMPLOYEE_TYPES['Chief_technical_officer'])
-            instance.user.groups.add(group)
-        elif instance.role == EMPLOYEE_TYPES['TeamLead']:
-            group = Group.objects.get(name=EMPLOYEE_TYPES['TeamLead'])
-            instance.user.groups.add(group)
-        elif instance.role == EMPLOYEE_TYPES['Senior']:
-            group = Group.objects.get(name=EMPLOYEE_TYPES['Senior'])
-            instance.user.groups.add(group)
-        elif instance.role == EMPLOYEE_TYPES['Middle']:
-            group = Group.objects.get(name=EMPLOYEE_TYPES['Middle'])
-            instance.user.groups.add(group)
-        elif instance.role == EMPLOYEE_TYPES['Junior']:
-            group = Group.objects.get(name=EMPLOYEE_TYPES['Junior'])
-            instance.user.groups.add(group)
+        for role in EMPLOYEE_TYPES:
+            if instance.role == role:
+                instance.user.groups.add(Group.objects.get(name=role))
 
     except Group.DoesNotExist:
         print('Group.DoesNotExist')

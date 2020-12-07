@@ -20,7 +20,7 @@ class Command(BaseCommand):
         groups = {'Chief_technical_officer': None, 'TeamLead': None,
                   'Senior': None, 'Middle': None, 'Junior': None}
 
-        for group in groups.keys():
+        for group in groups:
             groups[group] = Group.objects.get_or_create(name=group)[
                 first_element_tuple]
             groups[group].save()

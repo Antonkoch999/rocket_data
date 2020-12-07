@@ -1,11 +1,13 @@
 """This module create custom command for creating users and group."""
 
+import random
+
 from django.core.management.base import BaseCommand
-from django.contrib.auth.models import Group, Permission
 from django.contrib.auth.models import User
-from staff.models import EmployeeMptt
-from staff.constants import EMPLOYEE_TYPES
+
 from django_seed import Seed
+
+from staff.models import EmployeeMptt
 
 
 class Command(BaseCommand):
@@ -15,5 +17,12 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         seeder = Seed.seeder()
-        seeder.add_entity(User, 5)
+        seeder.add_entity(User, 20)
+
+        seeder.add_entity(EmployeeMptt, 20, {
+            'user': lambda x: User.objects.filter(employeemptt=None).first(),
+            'parent': lambda x: EmployeeMptt.objects.order_by("?").first(),
+            'level': lambda x: random.randint(0, 4),
+        })
         seeder.execute()
+

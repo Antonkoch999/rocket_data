@@ -16,7 +16,7 @@ app.config_from_object(settings, namespace='CELERY')
 app.conf.beat_schedule = {
     'add-every-30-seconds': {
         'task': 'staff.tasks.payroll',
-        'schedule': 7200,
+        'schedule': 7200,  # every two hours
     },
 }
 

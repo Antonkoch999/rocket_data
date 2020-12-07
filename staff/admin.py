@@ -13,6 +13,7 @@ from django_admin_relation_links import AdminChangeLinksMixin
 from staff.models import EmployeeMptt, InformationPaidSalary
 from staff.forms import ProductModelInlineForm, UserChangeForm
 from staff.tasks import delete_task
+from django.db.models import Sum
 
 
 class ProductModelInline(admin.StackedInline):
@@ -61,9 +62,19 @@ class AdminEmployeeMptt(AdminChangeLinksMixin, MPTTModelAdmin):
     readonly_fields = ['total_paid_list']
 
     @staticmethod
+    def total_paid(obj):
+        """Show information about the sum of all payments."""
+        total = InformationPaidSalary.objects.filter(
+            employee=obj).aggregate(total_paid=Sum('salary'))['total_paid']
+        if total is None:
+            return '0 $'
+        return f'{total} $'
+
+    @staticmethod
     def total_paid_list(obj):
         """Show information about the number of salary payments."""
-        info_salary = InformationPaidSalary.objects.filter(employee=obj)
+        info_salary = InformationPaidSalary.objects.select_related(
+            'employee').filter(employee=obj)
         if info_salary.count() == 0:
             return '0 $'
         info_list = []
@@ -80,9 +91,7 @@ class AdminEmployeeMptt(AdminChangeLinksMixin, MPTTModelAdmin):
         the number of users is more than 20, then the task is sent to celery.
         """
         if queryset.count() > 20:
-            lst = []
-            for employee in queryset:
-                lst.append(employee.id)
+            lst = list(queryset.values_list('id', flat=True))
             delete_task.delay(lst)
         else:
             for employee in queryset:
@@ -102,10 +111,15 @@ class GroupAdminWithCount(GroupAdmin):
         return obj.user_set.count()
 
 
+class InformationPaidSalaryAdmin(admin.ModelAdmin):
+    list_display = ('employee', 'salary', 'data',)
+    list_filter = ('employee', 'data')
+
+
 admin.site.unregister(Group)
 admin.site.register(Group, GroupAdminWithCount)
 
 admin.site.unregister(User)
 admin.site.register(User, CustomUserAdmin)
 admin.site.register(EmployeeMptt, AdminEmployeeMptt)
-admin.site.register(InformationPaidSalary)
+admin.site.register(InformationPaidSalary, InformationPaidSalaryAdmin)

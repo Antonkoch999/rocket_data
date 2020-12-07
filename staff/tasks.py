@@ -12,12 +12,13 @@ from staff.models import InformationPaidSalary, EmployeeMptt
 def payroll():
     """Every 2 hours credits to the employee wages."""
     users = EmployeeMptt.objects.all()
-    for user in users:
-        InformationPaidSalary.objects.create(
+    create_salary_information = [
+        InformationPaidSalary(
             employee=user,
             salary=int(user.salary),
             data=f"{datetime.datetime.now():%Y-%m-%d}",
-        )
+        ) for user in users]
+    InformationPaidSalary.objects.bulk_create(create_salary_information)
 
 
 @shared_task
@@ -26,6 +27,5 @@ def delete_task(lst):
 
     The list(lst) contains id EmployeeMptt.
     """
-    for id_ in lst:
-        info = InformationPaidSalary.objects.filter(employee=id_)
-        info.delete()
+    info = InformationPaidSalary.objects.filter(employee__in=lst)
+    info.delete()
