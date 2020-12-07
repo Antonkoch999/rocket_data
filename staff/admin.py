@@ -5,15 +5,15 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.admin import GroupAdmin
 from django.contrib.auth.models import Group, User
 from django.utils.html import format_html
+from django.db.models import Sum
 
 from mptt.admin import MPTTModelAdmin
 from rest_framework.reverse import reverse
 from django_admin_relation_links import AdminChangeLinksMixin
 
+import staff.tasks
 from staff.models import EmployeeMptt, InformationPaidSalary
 from staff.forms import ProductModelInlineForm, UserChangeForm
-from staff.tasks import delete_task
-from django.db.models import Sum
 
 
 class ProductModelInline(admin.StackedInline):
@@ -92,7 +92,7 @@ class AdminEmployeeMptt(AdminChangeLinksMixin, MPTTModelAdmin):
         """
         if queryset.count() > 20:
             lst = list(queryset.values_list('id', flat=True))
-            delete_task.delay(lst)
+            staff.tasks.delete_task.delay(lst)
         else:
             for employee in queryset:
                 info = InformationPaidSalary.objects.filter(
@@ -112,6 +112,8 @@ class GroupAdminWithCount(GroupAdmin):
 
 
 class InformationPaidSalaryAdmin(admin.ModelAdmin):
+    """Class is representation of InformationPaidSalary in admin interface."""
+
     list_display = ('employee', 'salary', 'data',)
     list_filter = ('employee', 'data')
 

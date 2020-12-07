@@ -1,12 +1,13 @@
 """This module contains custom decorators."""
 
-import django.db
 import time
 import functools
 
+import django.db
+
 
 def query_debugger(func):
-    """Required to test the number of database queries."""
+    """Require to test the number of database queries."""
     @functools.wraps(func)
     def inner_func(*args, **kwargs):
         django.db.reset_queries()

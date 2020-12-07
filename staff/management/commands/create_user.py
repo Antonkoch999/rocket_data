@@ -16,6 +16,10 @@ class Command(BaseCommand):
     help = 'Displays current time'
 
     def handle(self, *args, **kwargs):
+        """Logic custom command.
+
+        Create users and EmployeeMptt through django-seed.
+        """
         seeder = Seed.seeder()
         seeder.add_entity(User, 20)
 
@@ -25,4 +29,3 @@ class Command(BaseCommand):
             'level': lambda x: random.randint(0, 4),
         })
         seeder.execute()
-
